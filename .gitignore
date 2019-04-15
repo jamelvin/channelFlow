@@ -1,0 +1,5 @@
+naluX
+*.o*
+results
+restart
+*.exo
