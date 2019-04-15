@@ -140,5 +140,21 @@ def NALUprocessDS(bname,numPart,var,log,visc,ts,save,plotDNS,dnsDataFile):
 
 
 ######## MAIN #######
-#NALUprocessDS(exoBasename,numExoParts,variableToPrint,loglogPlot?,viscosity,ts#FromExoDBToPlot,SavePlotToDisk?,ComparePlotToDNS?,DNSdataFilePath)
+#### NALUproccesDS()
+#### NALUprocessDS(exoBasename,numExoParts,variableToPrint,loglogPlot?,viscosity,tsFromExoDBToPlot,SavePlotToDisk?,ComparePlotToDNS?,DNSdataFilePath)
+####
+#### exoBasename = path to basename of exodus files, i.e 'Channel.e'
+#### numExoParts = number of partitions for exodus DB
+#### variableToPrint = which variable to print, options are "ux", "uy", "uz", "tke"
+#### loglogPlot? = True/False   Do you want to change the axes to a log log plot?
+#### viscosity = Enter the value of the viscosity used in Nalu, this is used for normalization
+#### tsFromExoDBToPlot = which ts index do you want to plot, -1 would be the last timestep,
+####                     0 the first, other indices as they fall in the exo DB
+#### savePlotToDisk? = Do you want to save the plot to a file instead of showing it. Right
+####                   now this is hardcoded to a path on my computer
+#### ComparePlotToDNS? = Would you like to plot the DNS data as a comparison, only works with
+####                     "ux" right now...
+#### DNSdataFilePath = If you are comparing to DNS you need to pass it the file path to the
+####                   DNS data
+
 df = NALUprocessDS('/workspace/jmelvin/meshes/TAMS_KE-Channel-BUGFIX.e',32,"ux",True,0.001,-1,False,True,"/workspace/jmelvin/Research/channelFlow/Re1000.txt")
