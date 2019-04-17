@@ -114,8 +114,10 @@ if __name__ == "__main__":
             times.append(int(re.findall(r"\d+", fname)[-1]))
         times = np.unique(sorted(times))
 
-        # Loop over each time step and get the dataframe
-        for time in times[-1:]:
+        # Loop over each time step and get the dataframes
+        dfs = []
+        centerline = np.zeros((len(times), 4))
+        for k, time in enumerate(times):
             pattern = prefix + "*." + str(time) + suffix
             fnames = sorted(glob.glob(os.path.join(fdir, "lineouts", pattern)))
             df = utilities.get_merged_csv(fnames)
@@ -123,32 +125,66 @@ if __name__ == "__main__":
             renames = utilities.get_renames()
             df.columns = [renames[col] for col in df.columns]
             df["yplus"] = df.y * utau / nu
-            xlocs = np.unique(df.x)
-            for k, xloc in enumerate(xlocs):
-                subdf = df[np.fabs(df.x - xloc) < 1e-5].copy()
 
-                plt.figure(k * num_figs + 0)
-                p = plt.plot(subdf.ux, subdf.y, ls="-", lw=1)
+            idx = (np.fabs(df.y - 1.0)).idxmin()
+            centerline[k, 0] = time
+            centerline[k, 1] = df.ux.iloc[idx]
+            centerline[k, 2] = df.uy.iloc[idx]
+            centerline[k, 3] = df.uz.iloc[idx]
+            dfs.append(df)
 
-                plt.figure(k * num_figs + 1)
-                p = plt.plot(subdf.uy, subdf.y, ls="-", lw=1)
+        centerline = pd.DataFrame(centerline, columns=["time", "ux", "uy", "uz"])
+        plt.figure("centerline")
+        p = plt.plot(centerline.time, centerline.ux, ls="-", lw=1)
 
-                pdf = subdf[subdf.y <= 1.0].copy()
-                plt.figure(k * num_figs + 2)
-                p = plt.plot(pdf.yplus, pdf.ux, ls="-", lw=1)
+        # Plot velocity profiles at the last time
+        df = dfs[-1]
+        xlocs = np.unique(df.x)
+        for k, xloc in enumerate(xlocs):
+            subdf = df[np.fabs(df.x - xloc) < 1e-5].copy()
+
+            plt.figure(f"{xloc}_0")
+            p = plt.plot(subdf.ux, subdf.y, ls="-", lw=1)
+
+            plt.figure(f"{xloc}_1")
+            p = plt.plot(subdf.uy, subdf.y, ls="-", lw=1)
+
+            pdf = subdf[subdf.y <= 1.0].copy()
+            plt.figure(f"{xloc}_2")
+            p = plt.plot(pdf.yplus, pdf.ux, ls="-", lw=1)
 
     # Plot DNS data
     dnsdir = os.path.abspath("dns_data")
     dname = os.path.join(dnsdir, "Re5200.txt")
     dns = pd.read_csv(dname, delim_whitespace=True)
-    plt.figure(k * num_figs + 2)
+    plt.figure("centerline")
+    p = plt.plot(
+        [centerline.time.min(), centerline.time.max()],
+        [dns.U.iloc[-1], dns.U.iloc[-1]],
+        ls="-",
+        lw=1,
+        color=cmap[-1],
+    )
+
+    plt.figure(f"3_2")
     plt.plot(dns["y^+"], dns["U"], ls="-", lw=1, color=cmap[-1])
 
     # Save plots
     fname = "lineouts.pdf"
     with PdfPages(fname) as pdf:
+
+        plt.figure("centerline")
+        ax = plt.gca()
+        plt.xlabel(r"$t$", fontsize=22, fontweight="bold")
+        plt.ylabel(r"$u_x$", fontsize=22, fontweight="bold")
+        plt.setp(ax.get_xmajorticklabels(), fontsize=16, fontweight="bold")
+        plt.setp(ax.get_ymajorticklabels(), fontsize=16, fontweight="bold")
+        plt.tight_layout()
+        pdf.savefig(dpi=300)
+
         for k, xloc in enumerate(xlocs):
-            plt.figure(k * num_figs + 0)
+
+            plt.figure(f"{xloc}_0")
             ax = plt.gca()
             plt.xlabel(r"$u_x$", fontsize=22, fontweight="bold")
             plt.ylabel(r"$y$", fontsize=22, fontweight="bold")
@@ -157,7 +193,7 @@ if __name__ == "__main__":
             plt.tight_layout()
             pdf.savefig(dpi=300)
 
-            plt.figure(k * num_figs + 1)
+            plt.figure(f"{xloc}_1")
             ax = plt.gca()
             plt.xlabel(r"$u_y$", fontsize=22, fontweight="bold")
             plt.ylabel(r"$y$", fontsize=22, fontweight="bold")
@@ -166,7 +202,7 @@ if __name__ == "__main__":
             plt.tight_layout()
             pdf.savefig(dpi=300)
 
-            plt.figure(k * num_figs + 2)
+            plt.figure(f"{xloc}_2")
             ax = plt.gca()
             plt.xlabel(r"$y^{+}$", fontsize=22, fontweight="bold")
             plt.ylabel(r"$u_x$", fontsize=22, fontweight="bold")

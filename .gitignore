@@ -3,3 +3,5 @@ naluX
 results
 restart
 *.exo
+core.*
+Pipfile.lock

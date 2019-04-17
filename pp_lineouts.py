@@ -53,7 +53,7 @@ renderView1 = GetActiveViewOrCreate("RenderView")
 
 # create a new 'Plot Over Line'
 plotOverLine1 = PlotOverLine(Input=exoreader, Source="High Resolution Line Source")
-plotOverLine1.Source.Resolution = 10000
+plotOverLine1.Source.Resolution = 100000
 
 # Line out coordinates
 xcens = [3.0]
