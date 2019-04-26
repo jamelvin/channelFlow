@@ -29,8 +29,8 @@ linear_solvers:
 realms:
 
   - name: realm_1
-    mesh: ../mesh/channel_Retau1000_uinf04_nu1E-5-ndtw.exo
-    use_edges: yes
+    mesh: ../mesh/PeriodicChannel-SWH-ndtw.exo
+    use_edges: no
     check_for_missing_bcs: yes
     automatic_decomposition_type: rcb
 
@@ -45,7 +45,7 @@ realms:
       solver_system_specification:
         velocity: solve_scalar
         turbulent_ke: solve_scalar
-        total_dissipation_rate: solve_scalar
+        specific_dissipation_rate: solve_scalar
         pressure: solve_cont
         ndtw: solve_cont
 
@@ -60,8 +60,8 @@ realms:
             max_iterations: 1
             convergence_tolerance: 1e-8
 
-        - ChienKEpsilon:
-            name: myKE
+        - ShearStressTransport:
+            name: mySST
             max_iterations: 1
             convergence_tolerance: 1e-8
 
@@ -72,7 +72,7 @@ realms:
           pressure: 0
           velocity: [25.0,0.0,0.0]
           turbulent_ke: 0.0001
-          total_dissipation_rate: 0.00001
+          specific_dissipation_rate: 3528.0
 
     material_properties:
       target_name: Unspecified-2-HEX
@@ -82,7 +82,7 @@ realms:
           value: 1.0
         - name: viscosity
           type: constant
-          value: 1.e-3
+          value: 1.9283055e-4
 
     boundary_conditions:
 
@@ -91,7 +91,6 @@ realms:
       wall_user_data:
         velocity: [0,0,0]
         turbulent_ke: 0.0
-        total_dissipation_rate: 0.0
         use_wall_function: no
 
     - wall_boundary_condition: bc_top
@@ -99,7 +98,6 @@ realms:
       wall_user_data:
         velocity: [0,0,0]
         turbulent_ke: 0.0
-        total_dissipation_rate: 0.0
         use_wall_function: no
 
     - periodic_boundary_condition: bc_inlet_outlet
@@ -114,8 +112,10 @@ realms:
 
     solution_options:
       name: myOptions
-      turbulence_model: keps
+      turbulence_model: sst
+      use_consolidated_solver_algorithm: yes
       projected_timescale_type: momentum_diag_inv
+      reduced_sens_cvfem_poisson: yes
 
       fix_pressure_at_node:
        value: 0.0
@@ -128,17 +128,17 @@ realms:
         - hybrid_factor:
             velocity: 1.0
             turbulent_ke: 1.0
-            total_dissipation_rate: 1.0
+            specific_dissipation_rate: 1.0
 
         - alpha_upw:
             velocity: 1.0
             turbulent_ke: 1.0
-            total_dissipation_rate: 1.0
+            specific_dissipation_rate: 1.0
 
         - upw_factor:
             velocity: 1.0
             turbulent_ke: 0.0
-            total_dissipation_rate: 0.0
+            specific_dissipation_rate: 0.0
 
         - noc_correction:
             pressure: yes
@@ -147,29 +147,32 @@ realms:
             pressure: no
             velocity: yes
             turbulent_ke: yes
-            total_dissipation_rate: yes
+            specific_dissipation_rate: yes
 
         - projected_nodal_gradient:
             velocity: element
             pressure: element
             turbulent_ke: element
-            total_dissipation_rate: element
+            specific_dissipation_rate: element
             ndtw: element
+
+        - element_source_terms:
+            momentum: [lumped_momentum_time_derivative, upw_advection_diffusion, body_force]
+            continuity: [advection]
+            turbulent_ke: [lumped_turbulent_ke_time_derivative, upw_advection_diffusion, lumped_sst]
+            specific_dissipation_rate: [lumped_specific_dissipation_rate_time_derivative, upw_advection_diffusion, lumped_sst]
+
+        - user_constants:
+            body_force: [1.0,0.0,0.0]
 
         - relaxation_factor:
             velocity: 0.7
             pressure: 0.3
             turbulent_ke: 0.7
-            total_dissipation_rate: 0.7
+            specific_dissipation_rate: 0.7
 
         - turbulence_model_constants:
-            utau: 1.0
-
-        - source_terms:
-            momentum: body_force
-
-        - source_term_parameters:
-            momentum: [1.00, 0.0, 0.0]
+            SDRWallFactor: 10.0
 
     restart:
       restart_data_base_name: restart/channelflow.rst
@@ -187,7 +190,7 @@ realms:
        - pressure_force
        - tau_wall
        - turbulent_ke
-       - total_dissipation_rate
+       - specific_dissipation_rate
        - minimum_distance_to_wall
        - dplus_wall_function
        - turbulent_viscosity

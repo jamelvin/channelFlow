@@ -29,7 +29,7 @@ linear_solvers:
 realms:
 
   - name: realm_1
-    mesh: ../mesh/PeriodicChannel-SWH-ndtw.exo
+    mesh: ../mesh/channel_Retau1000_uinf04_nu1E-5-ndtw.exo
     use_edges: no
     check_for_missing_bcs: yes
     automatic_decomposition_type: rcb
@@ -83,7 +83,6 @@ realms:
         - name: viscosity
           type: constant
           value: 1.e-3
-          # value: 1.9283055e-4
 
     boundary_conditions:
 
@@ -166,10 +165,10 @@ realms:
             total_dissipation_rate: yes
 
         - element_source_terms:
-            momentum: [momentum_time_derivative, advection_diffusion, body_force]
+            momentum: [lumped_momentum_time_derivative, upw_advection_diffusion, body_force]
             continuity: [advection]
-            turbulent_ke: [turbulent_ke_time_derivative, upw_advection_diffusion, keps]
-            total_dissipation_rate: [total_dissipation_rate_time_derivative, upw_advection_diffusion, keps]
+            turbulent_ke: [lumped_turbulent_ke_time_derivative, upw_advection_diffusion, keps]
+            total_dissipation_rate: [lumped_total_dissipation_rate_time_derivative, upw_advection_diffusion, keps]
 
         - user_constants:
             body_force: [1.0,0.0,0.0]
@@ -185,12 +184,12 @@ realms:
 
     restart:
       restart_data_base_name: restart/channelflow.rst
-      restart_frequency: 50
+      restart_frequency: 2000
       restart_start: 0
 
     output:
       output_data_base_name: results/channelflow.e
-      output_frequency: 50
+      output_frequency: 100
       output_node_set: no
       output_variables:
        - velocity
@@ -209,7 +208,7 @@ Time_Integrators:
       name: ti_1
       start_time: 0
       time_step: 1.0e-2
-      termination_step_count: 50000
+      termination_step_count: 30000
       time_stepping_type: fixed
       time_step_count: 0
       second_order_accuracy: yes

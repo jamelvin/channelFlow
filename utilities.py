@@ -74,6 +74,7 @@ def get_renames():
         "velocity_:0": "ux",
         "velocity_:1": "uy",
         "velocity_:2": "uz",
+        "turbulent_ke": "tke",
         "element_courant": "element_courant",
         "time": "avg_time",
         "GlobalNodeId": "GlobalNodeId",

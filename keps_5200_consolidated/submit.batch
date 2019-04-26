@@ -26,4 +26,3 @@ echo "Working dir    = $PWD"
 #sbcast -f ${nalu_exec} $(pwd)/naluX
 cp ${nalu_exec} $(pwd)/naluX
 srun -n ${mpi_ranks} -c 1 --cpu_bind=cores $(pwd)/naluX -i channelflow.yaml -o channelflow.o
-#srun -n ${mpi_ranks} -c 1 --cpu_bind=cores $(pwd)/naluX -i restart.yaml -o restart.o

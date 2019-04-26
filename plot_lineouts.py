@@ -135,7 +135,8 @@ if __name__ == "__main__":
 
         centerline = pd.DataFrame(centerline, columns=["time", "ux", "uy", "uz"])
         plt.figure("centerline")
-        p = plt.plot(centerline.time, centerline.ux, ls="-", lw=1)
+        p = plt.plot(centerline.time, centerline.ux, ls="-", lw=2, color=cmap[i])
+        p[0].set_dashes(dashseq[i])
 
         # Plot velocity profiles at the last time
         df = dfs[-1]
@@ -144,30 +145,43 @@ if __name__ == "__main__":
             subdf = df[np.fabs(df.x - xloc) < 1e-5].copy()
 
             plt.figure(f"{xloc}_0")
-            p = plt.plot(subdf.ux, subdf.y, ls="-", lw=1)
+            p = plt.plot(subdf.ux, subdf.y, ls="-", lw=2, color=cmap[i])
+            p[0].set_dashes(dashseq[i])
 
             plt.figure(f"{xloc}_1")
-            p = plt.plot(subdf.uy, subdf.y, ls="-", lw=1)
+            p = plt.plot(subdf.uy, subdf.y, ls="-", lw=2, color=cmap[i])
+            p[0].set_dashes(dashseq[i])
 
             pdf = subdf[subdf.y <= 1.0].copy()
             plt.figure(f"{xloc}_2")
-            p = plt.plot(pdf.yplus, pdf.ux, ls="-", lw=1)
+            p = plt.plot(pdf.yplus, pdf.ux, ls="-", lw=2, color=cmap[i])
+            p[0].set_dashes(dashseq[i])
+
+            plt.figure(f"{xloc}_3")
+            p = plt.plot(pdf.yplus, pdf.tke, ls="-", lw=2, color=cmap[i])
+            p[0].set_dashes(dashseq[i])
 
     # Plot DNS data
     dnsdir = os.path.abspath("dns_data")
-    dname = os.path.join(dnsdir, "Re5200.txt")
-    dns = pd.read_csv(dname, delim_whitespace=True)
+    Retau = min([1000, 5200], key=lambda x: abs(x - Retau))
+    vel_dns = pd.read_csv(os.path.join(dnsdir, f"Re{Retau}.txt"), delim_whitespace=True)
+    tke_dns = pd.read_csv(
+        os.path.join(dnsdir, f"tke-Re{Retau}.txt"), delim_whitespace=True
+    )
     plt.figure("centerline")
     p = plt.plot(
         [centerline.time.min(), centerline.time.max()],
-        [dns.U.iloc[-1], dns.U.iloc[-1]],
+        [vel_dns.U.iloc[-1], vel_dns.U.iloc[-1]],
         ls="-",
         lw=1,
         color=cmap[-1],
     )
 
     plt.figure(f"3_2")
-    plt.plot(dns["y^+"], dns["U"], ls="-", lw=1, color=cmap[-1])
+    plt.plot(vel_dns["y^+"], vel_dns["U"], ls="-", lw=1, color=cmap[-1])
+
+    plt.figure(f"3_3")
+    plt.plot(tke_dns["y^+"], tke_dns["k"], ls="-", lw=1, color=cmap[-1])
 
     # Save plots
     fname = "lineouts.pdf"
@@ -206,6 +220,16 @@ if __name__ == "__main__":
             ax = plt.gca()
             plt.xlabel(r"$y^{+}$", fontsize=22, fontweight="bold")
             plt.ylabel(r"$u_x$", fontsize=22, fontweight="bold")
+            plt.setp(ax.get_xmajorticklabels(), fontsize=16, fontweight="bold")
+            plt.setp(ax.get_ymajorticklabels(), fontsize=16, fontweight="bold")
+            ax.set_xscale("log")
+            plt.tight_layout()
+            pdf.savefig(dpi=300)
+
+            plt.figure(f"{xloc}_3")
+            ax = plt.gca()
+            plt.xlabel(r"$y^{+}$", fontsize=22, fontweight="bold")
+            plt.ylabel(r"$k$", fontsize=22, fontweight="bold")
             plt.setp(ax.get_xmajorticklabels(), fontsize=16, fontweight="bold")
             plt.setp(ax.get_ymajorticklabels(), fontsize=16, fontweight="bold")
             ax.set_xscale("log")

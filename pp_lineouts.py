@@ -39,7 +39,7 @@ opfx = os.path.join(odir, "output")
 # ----------------------------------------------------------------
 
 # create list of fields
-fields = ["velocity_"]
+fields = ["velocity_", "turbulent_ke"]
 blocks = ["unspecified-2-hex"]
 
 # create a new 'ExodusIIReader'
