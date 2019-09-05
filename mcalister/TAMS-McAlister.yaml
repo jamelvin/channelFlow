@@ -246,6 +246,7 @@ realms:
     solution_options:
       name: myOptions
       turbulence_model: tams_sst
+      reset_TAMS_averages_on_init: true
       projected_timescale_type: momentum_diag_inv
 
       options:
