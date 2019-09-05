@@ -1,0 +1,283 @@
+
+=================================================================
+                            Nalu:                                
+      A low Mach number, turbulent reacting flow code with       
+            coupling to PMR and object response (CHT)            
+=================================================================
+
+   Nalu Version: v1.2.0
+   Nalu GIT Commit SHA: 30573919157ddac102c0aeefb645431150d85eec-DIRTY
+   Trilinos Version: 12.17-gb6480dd370
+
+   TPLs: Boost, HDF5, netCDF, STK, Trilinos, YAML_cpp and zlib   
+   Optional TPLs enabled: OpenFAST, Hypre, TIOGA
+
+              Copyright 2014 Sandia Corporation.                 
+      This software is released under the license detailed       
+   in the file, LICENSE, which is located in the top-level Nalu  
+                     directory structure                         
+-----------------------------------------------------------------
+
+
+Realm Options Review: realm_1
+===========================
+Edge-based scheme will be activated
+Warning: When using automatic_decomposition_type, one must have a serial file
+Nalu will deactivate aura ghosting
+
+Turbulence Model Review:   
+===========================
+Turbulence Model is: tams_sst 1
+
+PPE review:   
+===========================
+Realm::create_mesh(): Begin
+
+Using decomposition method 'RCB' on 108 processors.
+
+Realm::create_mesh() End
+
+Boundary Condition Review: 
+===========================
+Symmetry BC name:    bc_front on front
+Symmetry BC name:    bc_tunnel_wall on tunnel_wall
+Wall BC name:        bc_wall on wing
+Open BC name:        bc_top on top
+Open BC name:        bc_open on outlet
+Inflow BC name:      bc_inflow on inlet
+Inflow BC name:      bc_bottom on bottom
+Overset BC name: bc_overset
+
+Initial Condition Review:  
+===========================
+Initial Is Type constant 
+
+Material Prop Review:      
+===========================
+density is a constant property: 1.225
+viscosity is a constant property: 3.756e-05
+
+EqSys/options Review:      
+===========================
+Edge projected nodal gradient for minimum distance to wall: 1
+Edge projected nodal gradient for velocity: 0
+Edge projected nodal gradient for pressure: 0
+Edge projected nodal gradient for turbulent_ke: 0
+Edge projected nodal gradient for specific_dissipation_rate: 0
+
+Realm memory Review:       realm_1
+===========================
+Node count from meta data = 3704142
+Total memory estimate for Matrix solve (per core)= 0.289779 GB.
+Total memory estimate (per core) = 0.289779 GB.
+
+Realm Options Review: ioRealmIC
+===========================
+Element-based scheme will be activated
+Warning: When using automatic_decomposition_type, one must have a serial file
+Nalu will deactivate aura ghosting
+
+Turbulence Model Review:   
+===========================
+Turbulence Model is: laminar 0
+
+PPE review:   
+===========================
+Realm::create_mesh(): Begin
+
+Using decomposition method 'RCB' on 108 processors.
+
+Realm::create_mesh() End
+
+Realm memory Review:       ioRealmIC
+===========================
+Node count from meta data = 3704142
+Total memory estimate for Matrix solve (per core)= 0 GB.
+Total memory estimate (per core) = 0 GB.
+
+Time Integrator Review:  
+=========================
+StandardTimeIntegrator 
+ name=              ti_1
+ second order =     1
+ maxTimeStepCount = 20000
+ fixed time step is active   with time step: 0.0001
+StandardTimeIntegrator realm_name[0]= realm_1
+StandardTimeIntegrator realm_name[0]= ioRealmIC
+
+Transfer Review:         
+=========================
+Specifying the transfer variables requires expert understanding; consider using coupling_physics
+Specifying the transfer variables requires expert understanding; consider using coupling_physics
+Specifying the transfer variables requires expert understanding; consider using coupling_physics
+Specifying the transfer variables requires expert understanding; consider using coupling_physics
+Specifying the transfer variables requires expert understanding; consider using coupling_physics
+Xfer Setup Information: xfer_ioIC_HEX
+the From realm name is: ioRealmIC
+the To realm name is: realm_1
+From/To Part Review: 
+the From mesh part name is: base-hex
+the To mesh part name is: base-hex
+From variable velocity To variable average_velocity
+From variable pressure To variable average_pressure
+Xfer Setup Information: xfer_ioIC_WEDGE
+the From realm name is: ioRealmIC
+the To realm name is: realm_1
+From/To Part Review: 
+the From mesh part name is: base-wedge
+the To mesh part name is: base-wedge
+From variable velocity To variable average_velocity
+From variable pressure To variable average_pressure
+Xfer Setup Information: xfer_ioIC_PYR
+the From realm name is: ioRealmIC
+the To realm name is: realm_1
+From/To Part Review: 
+the From mesh part name is: base-pyramid
+the To mesh part name is: base-pyramid
+From variable velocity To variable average_velocity
+From variable pressure To variable average_pressure
+Xfer Setup Information: xfer_ioIC_TET
+the From realm name is: ioRealmIC
+the To realm name is: realm_1
+From/To Part Review: 
+the From mesh part name is: base-tetra
+the To mesh part name is: base-tetra
+From variable velocity To variable average_velocity
+From variable pressure To variable average_pressure
+Xfer Setup Information: xfer_ioIC_TIP
+the From realm name is: ioRealmIC
+the To realm name is: realm_1
+From/To Part Review: 
+the From mesh part name is: tipvortex-hex
+the To mesh part name is: tipvortex-hex
+From variable velocity To variable average_velocity
+From variable pressure To variable average_pressure
+Realm::initialize() Begin 
+Declaring avgDudx in TAMS
+Declaring avgDudx in TAMS
+Declaring avgDudx in TAMS
+Declaring avgDudx in TAMS
+Declaring avgDudx in TAMS
+Edge fields added in TAMS 
+Edge fields added in TAMS 
+Edge fields added in TAMS 
+Edge fields added in TAMS 
+Edge fields added in TAMS 
+Mdot average added in TAMS 
+Mdot average added in TAMS 
+Mdot average added in TAMS 
+Mdot average added in TAMS 
+Mdot average added in TAMS 
+Mean average mass_flow_rate
+Am I Doing THIS?
+Mean average mass_flow_rate
+Created the following bc face/elem alg: MomentumEQS_symm_edge_AssembleFaceElemSolverAlg_TRIANGLE_3_TETRAHEDRON_4
+Created the following bc face/elem alg: MomentumEQS_symm_edge_AssembleFaceElemSolverAlg_QUADRILATERAL_4_HEXAHEDRON_8
+Created the following bc face/elem alg: MomentumEQS_symm_edge_AssembleFaceElemSolverAlg_TRIANGLE_3_WEDGE_6
+TIOGA: Using coordinates field: coordinates
+Realm::setup_overset_bc:: Selecting TIOGA TPL for overset connectivity
+the post processing type is surface
+the post processing file name: forces.dat
+the post processing physics name: surface_force_and_moment
+Target name(s): wing
+Parameters used are: 0
+Parameters used are: 0
+Parameters used are: 0
+Realm::ioBroker_->populate_mesh() Begin
+Realm::ioBroker_->populate_mesh() End
+Realm::create_edges(): Nalu Realm: realm_1 requires edge creation: Begin
+Realm::create_edges(): Nalu Realm: realm_1 requires edge creation: End
+Realm::ioBroker_->populate_field_data() Begin
+Realm::ioBroker_->populate_field_data() End
+Realm::create_output_mesh(): Begin
+Realm::create_output_mesh() End
+TIOGA: Initializing overset mesh blocks: 
+TIOGA: mesh block = tipvortex; ID min = 1; ID max = 859891
+	Bounding box: 
+		[0.905814, -0.486938, 2.8]
+		[7.95911, 1.94446, 3.8]
+
+TIOGA: mesh block = background; ID min = 11; ID max = 3214366
+	Bounding box: 
+		[-10, -15, -8.87311e-16]
+		[20, 15, 15]
+
+TIOGA: Initialized 2 overset blocks
+TIOGA: Overset algorithm will ghost 30603 elements
+TIOGA: Num. receptor nodes = 171128
+EquationSystems::initialize(): Begin 
+EquationSystems::initialize(): End 
+
+Realm memory Review:       realm_1
+===========================
+Total memory estimate for Matrix solve (per core)= 0.289779 GB.
+Total memory estimate for Fields (per core)= 0.0343729 GB.
+Total memory estimate (per core) = 0.324152 GB.
+Realm::initialize() End 
+PROCESSING Transfer::initialize_begin() for: xfer_ioIC_HEX
+PROCESSING Transfer::initialize_begin() for: xfer_ioIC_WEDGE
+PROCESSING Transfer::initialize_begin() for: xfer_ioIC_PYR
+PROCESSING Transfer::initialize_begin() for: xfer_ioIC_TET
+PROCESSING Transfer::initialize_begin() for: xfer_ioIC_TIP
+PROCESSING Transfer::initialize_end() for: xfer_ioIC_HEX
+
+XFER::LinInterp::fine_search() Overview:
+  Maximum normalized distance found is: 213.283 (should be unity or less)
+  Maximum number of candidate bounding boxes found for a single point is: 58
+  Should max normalized distance and/or candidate bounding box size be too large, please check setup
+PROCESSING Transfer::initialize_end() for: xfer_ioIC_WEDGE
+
+XFER::LinInterp::fine_search() Overview:
+  Maximum normalized distance found is: 4.45452 (should be unity or less)
+  Maximum number of candidate bounding boxes found for a single point is: 8
+  Should max normalized distance and/or candidate bounding box size be too large, please check setup
+PROCESSING Transfer::initialize_end() for: xfer_ioIC_PYR
+
+XFER::LinInterp::fine_search() Overview:
+  Maximum normalized distance found is: 319.425 (should be unity or less)
+  Maximum number of candidate bounding boxes found for a single point is: 29
+  Should max normalized distance and/or candidate bounding box size be too large, please check setup
+PROCESSING Transfer::initialize_end() for: xfer_ioIC_TET
+
+XFER::LinInterp::fine_search() Overview:
+  Maximum normalized distance found is: 425.413 (should be unity or less)
+  Maximum number of candidate bounding boxes found for a single point is: 162
+  Should max normalized distance and/or candidate bounding box size be too large, please check setup
+PROCESSING Transfer::initialize_end() for: xfer_ioIC_TIP
+
+XFER::LinInterp::fine_search() Overview:
+  Maximum normalized distance found is: 1 (should be unity or less)
+  Maximum number of candidate bounding boxes found for a single point is: 8
+  Should max normalized distance and/or candidate bounding box size be too large, please check setup
+
+*******************************************************
+Simulation Shall Commence: number of processors = 108
+*******************************************************
+Realm::populate_variables_form_input() candidate input time: 0.122 for Realm: ioRealmIC
+
+PROCESSING Transfer::execute() for: xfer_ioIC_HEX
+XFER From variable: velocity To variable average_velocity
+XFER From variable: pressure To variable average_pressure
+
+
+PROCESSING Transfer::execute() for: xfer_ioIC_WEDGE
+XFER From variable: velocity To variable average_velocity
+XFER From variable: pressure To variable average_pressure
+
+
+PROCESSING Transfer::execute() for: xfer_ioIC_PYR
+XFER From variable: velocity To variable average_velocity
+XFER From variable: pressure To variable average_pressure
+
+
+PROCESSING Transfer::execute() for: xfer_ioIC_TET
+XFER From variable: velocity To variable average_velocity
+XFER From variable: pressure To variable average_pressure
+
+
+PROCESSING Transfer::execute() for: xfer_ioIC_TIP
+XFER From variable: velocity To variable average_velocity
+XFER From variable: pressure To variable average_pressure
+
+ 1/1         myNDTW
+        WallDistEQS           17        0.00193458       0.166934             1

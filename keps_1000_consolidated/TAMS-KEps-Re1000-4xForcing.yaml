@@ -42,8 +42,8 @@ transfers:
 realms:
 
   - name: realm_1
-    mesh: restart/kepsChannelEdge.rst
-    use_edges: yes 
+    mesh: restart/channelflow.rst
+    use_edges: no
     check_for_missing_bcs: yes
     support_inconsistent_multi_state_restart: yes
     automatic_decomposition_type: rcb
@@ -142,9 +142,9 @@ realms:
     solution_options:
       name: myOptions
       turbulence_model: tams_keps
-      #use_consolidated_solver_algorithm: yes
+      use_consolidated_solver_algorithm: yes
       projected_timescale_type: momentum_diag_inv
-      #reduced_sens_cvfem_poisson: yes
+      reduced_sens_cvfem_poisson: yes
 
       fix_pressure_at_node:
        value: 0.0
@@ -185,42 +185,39 @@ realms:
             total_dissipation_rate: element
             ndtw: element
 
-        #- shifted_gradient_operator:
-        #    velocity: yes
-        #    pressure: yes
-        #    turbulent_ke: yes
-        #    total_dissipation_rate: yes
+        - shifted_gradient_operator:
+            velocity: yes
+            pressure: yes
+            turbulent_ke: yes
+            total_dissipation_rate: yes
 
-        #- element_source_terms:
-        #    momentum: [momentum_time_derivative, advection_diffusion, tams_keps, tams_keps_forcing, body_force]
-        #    continuity: [advection]
-        #    turbulent_ke: [turbulent_ke_time_derivative, TAMS_advection_diffusion, tams_keps]
-        #    total_dissipation_rate: [total_dissipation_rate_time_derivative, TAMS_advection_diffusion, tams_keps]
+        - element_source_terms:
+            momentum: [momentum_time_derivative, advection_diffusion, tams_keps, tams_keps_forcing, body_force]
+            continuity: [advection]
+            turbulent_ke: [turbulent_ke_time_derivative, TAMS_advection_diffusion, tams_keps]
+            total_dissipation_rate: [total_dissipation_rate_time_derivative, TAMS_advection_diffusion, tams_keps]
+
+        - user_constants:
+            body_force: [1.0,0.0,0.0]
 
         - relaxation_factor:
-            velocity: 1.0 #0.7 #1.0
-            pressure: 1.0 #0.3 #1.0
-            turbulent_ke: 1.0 #0.7 #1.0
-            total_dissipation_rate: 1.0 #0.7 #1.0
+            velocity: 1.0 #0.7
+            pressure: 1.0 #0.3
+            turbulent_ke: 1.0 #0.7
+            total_dissipation_rate: 1.0 #0.7
 
         - turbulence_model_constants:
             utau: 1.0
             forcingFactor: 32.0
 
-        - source_terms:
-            momentum: body_force
-
-        - source_term_parameters:
-            momentum: [1.00, 0.0, 0.0]
-
     restart:
-      restart_data_base_name: restart/TAMS-KEps-Re1000-4x.rst
-      restart_frequency: 2000 
+      restart_data_base_name: restart/TAMS-KEps-Re1000-82119-4x.rst
+      restart_frequency: 2000
       restart_time: 10000000.0 
 
     output:
-      output_data_base_name: results/TAMS-KEps-Re1000-4x.e
-      output_frequency: 200 
+      output_data_base_name: results/TAMS-KEps-Re1000-82119-4x.e
+      output_frequency: 200
       output_node_set: no
       output_variables:
        - velocity
@@ -234,9 +231,10 @@ realms:
        - minimum_distance_to_wall
        - turbulent_viscosity
        - k_ratio
-       - average_time
-       - average_mass_flow_rate
        - average_tke_resolved
+       - average_time
+       - average_mass_flow_rate_scs
+       - mass_flow_rate_scs
        - avg_res_adequacy_parameter
        - resolution_adequacy_parameter
        - metric_tensor
@@ -245,7 +243,7 @@ realms:
        - average_dudx
 
   - name: ioRealmIC
-    mesh: restart/kepsChannelEdge.rst
+    mesh: restart/channelflow.rst
     automatic_decomposition_type: rcb
     type: initialization
 

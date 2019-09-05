@@ -165,19 +165,19 @@ realms:
             total_dissipation_rate: yes
 
         - element_source_terms:
-            momentum: [lumped_momentum_time_derivative, upw_advection_diffusion, body_force]
+            momentum: [lumped_momentum_time_derivative, advection_diffusion, body_force]
             continuity: [advection]
-            turbulent_ke: [lumped_turbulent_ke_time_derivative, upw_advection_diffusion, keps]
-            total_dissipation_rate: [lumped_total_dissipation_rate_time_derivative, upw_advection_diffusion, keps]
+            turbulent_ke: [lumped_turbulent_ke_time_derivative, advection_diffusion, keps]
+            total_dissipation_rate: [lumped_total_dissipation_rate_time_derivative, advection_diffusion, keps]
 
         - user_constants:
             body_force: [1.0,0.0,0.0]
 
         - relaxation_factor:
-            velocity: 0.7
-            pressure: 0.3
-            turbulent_ke: 0.7
-            total_dissipation_rate: 0.7
+            velocity: 1.0 #0.7
+            pressure: 1.0 #0.3
+            turbulent_ke: 1.0 #0.7
+            total_dissipation_rate: 1.0 #0.7
 
         - turbulence_model_constants:
             utau: 1.0
@@ -189,7 +189,7 @@ realms:
 
     output:
       output_data_base_name: results/channelflow.e
-      output_frequency: 100
+      output_frequency: 200
       output_node_set: no
       output_variables:
        - velocity
@@ -208,7 +208,7 @@ Time_Integrators:
       name: ti_1
       start_time: 0
       time_step: 1.0e-2
-      termination_step_count: 30000
+      termination_step_count: 50000 
       time_stepping_type: fixed
       time_step_count: 0
       second_order_accuracy: yes

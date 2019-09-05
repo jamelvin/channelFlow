@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH --job-name=TAMS-KEPS
+#SBATCH --job-name=TAMS-KEPS-2x
 #SBATCH --account=hfm
-#SBATCH --nodes=3
-#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --time=05:00:00
 #SBATCH -o %x.o%j
 
 module purge
@@ -24,6 +24,6 @@ echo "Num. threads   = $OMP_NUM_THREADS"
 echo "Working dir    = $PWD"
 
 #sbcast -f ${nalu_exec} $(pwd)/naluX
-cp ${nalu_exec} $(pwd)/naluX
-srun -n ${mpi_ranks} -c 1 --cpu_bind=cores $(pwd)/naluX -i TAMS-KEps-Re5200.yaml -o TAMS-KEps-Re5200.log
+#cp ${nalu_exec} $(pwd)/naluX
+srun -n ${mpi_ranks} -c 1 --cpu_bind=cores /projects/hfm/jmelvin/exawind/source/nalu-wind/build-gcc/naluX -i TAMS-KEps-Re1000-2xForcing.yaml -o TAMS-KEps-Re1000-2x.log
 #srun -n ${mpi_ranks} -c 1 --cpu_bind=cores $(pwd)/naluX -i restart.yaml -o restart.o

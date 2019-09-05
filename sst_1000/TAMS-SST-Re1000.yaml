@@ -42,7 +42,7 @@ transfers:
 realms:
 
   - name: realm_1
-    mesh: restart/kepsChannelEdge.rst
+    mesh: restart/channelflow.rst
     use_edges: yes 
     check_for_missing_bcs: yes
     support_inconsistent_multi_state_restart: yes
@@ -59,7 +59,7 @@ realms:
       solver_system_specification:
         velocity: solve_scalar
         turbulent_ke: solve_scalar
-        total_dissipation_rate: solve_scalar
+        specific_dissipation_rate: solve_scalar
         pressure: solve_cont
         ndtw: solve_cont
         time_averaged_model_split: solve_cont
@@ -75,8 +75,8 @@ realms:
             max_iterations: 1
             convergence_tolerance: 1e-8
 
-        - ChienKEpsilon:
-            name: myKE
+        - ShearStressTransport:
+            name: mySST
             max_iterations: 1
             convergence_tolerance: 1e-8
 
@@ -92,7 +92,7 @@ realms:
           pressure: 0
           velocity: [22.5,0.0,0.0]
           turbulent_ke: 0.0005
-          total_dissipation_rate: 0.0005
+          specific_dissipation_rate: 0.0005
           average_velocity: [22.5,0.0,0.0]
           average_pressure: 0
           average_density: 1.0
@@ -118,7 +118,6 @@ realms:
       wall_user_data:
         velocity: [0,0,0]
         turbulent_ke: 0.0
-        total_dissipation_rate: 0.0
         use_wall_function: no
 
     - wall_boundary_condition: bc_top
@@ -126,7 +125,6 @@ realms:
       wall_user_data:
         velocity: [0,0,0]
         turbulent_ke: 0.0
-        total_dissipation_rate: 0.0
         use_wall_function: no
 
     - periodic_boundary_condition: bc_inlet_outlet
@@ -141,7 +139,7 @@ realms:
 
     solution_options:
       name: myOptions
-      turbulence_model: tams_keps
+      turbulence_model: tams_sst
       #use_consolidated_solver_algorithm: yes
       projected_timescale_type: momentum_diag_inv
       #reduced_sens_cvfem_poisson: yes
@@ -157,17 +155,17 @@ realms:
         - hybrid_factor:
             velocity: 1.0
             turbulent_ke: 1.0
-            total_dissipation_rate: 1.0
+            specific_dissipation_rate: 1.0
 
         - alpha_upw:
             velocity: 1.0
             turbulent_ke: 1.0
-            total_dissipation_rate: 1.0
+            specific_dissipation_rate: 1.0
 
         - upw_factor:
             velocity: 1.0
             turbulent_ke: 0.0
-            total_dissipation_rate: 0.0
+            specific_dissipation_rate: 0.0
 
         - noc_correction:
             pressure: yes
@@ -176,35 +174,35 @@ realms:
             pressure: no
             velocity: yes
             turbulent_ke: yes
-            total_dissipation_rate: yes
+            specific_dissipation_rate: yes
 
         - projected_nodal_gradient:
             velocity: element
             pressure: element
             turbulent_ke: element
-            total_dissipation_rate: element
+            specific_dissipation_rate: element
             ndtw: element
 
         #- shifted_gradient_operator:
         #    velocity: yes
         #    pressure: yes
         #    turbulent_ke: yes
-        #    total_dissipation_rate: yes
+        #    specific_dissipation_rate: yes
 
         #- element_source_terms:
         #    momentum: [momentum_time_derivative, advection_diffusion, tams_keps, tams_keps_forcing, body_force]
         #    continuity: [advection]
         #    turbulent_ke: [turbulent_ke_time_derivative, TAMS_advection_diffusion, tams_keps]
-        #    total_dissipation_rate: [total_dissipation_rate_time_derivative, TAMS_advection_diffusion, tams_keps]
+        #    specific_dissipation_rate: [total_dissipation_rate_time_derivative, TAMS_advection_diffusion, tams_keps]
 
         - relaxation_factor:
             velocity: 1.0 #0.7 #1.0
             pressure: 1.0 #0.3 #1.0
             turbulent_ke: 1.0 #0.7 #1.0
-            total_dissipation_rate: 1.0 #0.7 #1.0
+            specific_dissipation_rate: 1.0 #0.7 #1.0
 
         - turbulence_model_constants:
-            utau: 1.0
+            SDRWallFactor: 0.625
             forcingFactor: 32.0
 
         - source_terms:
@@ -214,12 +212,12 @@ realms:
             momentum: [1.00, 0.0, 0.0]
 
     restart:
-      restart_data_base_name: restart/TAMS-KEps-Re1000-4x.rst
+      restart_data_base_name: restart/TAMS-SST-Re1000-4x.rst
       restart_frequency: 2000 
       restart_time: 10000000.0 
 
     output:
-      output_data_base_name: results/TAMS-KEps-Re1000-4x.e
+      output_data_base_name: results/TAMS-SST-Re1000-4x.e
       output_frequency: 200 
       output_node_set: no
       output_variables:
@@ -230,7 +228,7 @@ realms:
        - pressure_force
        - tau_wall
        - turbulent_ke
-       - total_dissipation_rate
+       - specific_dissipation_rate
        - minimum_distance_to_wall
        - turbulent_viscosity
        - k_ratio
@@ -245,7 +243,7 @@ realms:
        - average_dudx
 
   - name: ioRealmIC
-    mesh: restart/kepsChannelEdge.rst
+    mesh: restart/channelflow.rst
     automatic_decomposition_type: rcb
     type: initialization
 

@@ -99,8 +99,7 @@ realms:
           average_tke_resolved: 0.0
           average_dudx: 0.0
           k_ratio: 1.0
-          #Element field cannot be initialized this way...
-          #average_resolution_adequacy_parameter: 1.0 
+          avg_res_adequacy_parameter: 1.0 
 
     material_properties:
       target_name: Unspecified-2-HEX
@@ -202,22 +201,23 @@ realms:
             body_force: [1.0,0.0,0.0]
 
         - relaxation_factor:
-            velocity: 0.7
-            pressure: 0.3
-            turbulent_ke: 0.7
-            total_dissipation_rate: 0.7
+            velocity: 1.0 #0.7
+            pressure: 1.0 #0.3
+            turbulent_ke: 1.0 #0.7
+            total_dissipation_rate: 1.0 #0.7
 
         - turbulence_model_constants:
             utau: 1.0
+            forcingFactor: 32.0
 
     restart:
       restart_data_base_name: restart/TAMS-KEps-Re5200.rst
-      restart_frequency: 2000
+      restart_frequency: 4000
       restart_time: 10000000.0 
 
     output:
       output_data_base_name: results/TAMS-KEps-Re5200.e
-      output_frequency: 200
+      output_frequency: 400
       output_node_set: no
       output_variables:
        - velocity
@@ -231,11 +231,14 @@ realms:
        - minimum_distance_to_wall
        - turbulent_viscosity
        - k_ratio
-       - element_courant
        - average_tke_resolved
-       - average_resolution_adequacy_parameter
+       - average_time
+       - average_mass_flow_rate_scs
+       - mass_flow_rate_scs
+       - avg_res_adequacy_parameter
        - resolution_adequacy_parameter
        - metric_tensor
+       - element_courant
        - average_production
        - average_dudx
 
@@ -270,7 +273,7 @@ Time_Integrators:
       name: ti_1
       start_time: 0
       time_step: 1.0e-3
-      termination_step_count: 30000
+      termination_step_count: 120000 
       time_stepping_type: fixed
       time_step_count: 0
       second_order_accuracy: yes
